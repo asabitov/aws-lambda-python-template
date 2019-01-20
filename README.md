@@ -3,7 +3,7 @@ AWS Lambda template for a Python script.
 
 ### Deploy a Python script to AWS Lambda.
 ```
-Usage: deploy.sh [-c schedule] script
+Usage: deploy.sh [-c schedule] [-u] script
 
 The 'script' is a Python script to be deployed as a Lambda function.
 

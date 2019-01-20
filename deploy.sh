@@ -31,7 +31,7 @@ deploy_function() {
   if [ -z ${python_modules_path} ]; then
     cp -a ${python_script} build/"${pkg_name}"
   else
-    cp -a ${python_script} "${python_modules_path}/*" build/"${pkg_name}"
+    cp -a ${python_script} ${python_modules_path}/* build/"${pkg_name}"
   fi
 
   cd build/${pkg_name}

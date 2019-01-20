@@ -15,6 +15,8 @@ print_help() {
   echo
   echo "  -h    Print a help message and exit."
   echo
+  echo "  -u    Update Lambda function's code if the function already exists."
+  echo
 
 }
 
@@ -35,24 +37,43 @@ deploy_function() {
   cd build/${pkg_name}
   zip -r "${pkg_name}.zip" ./ &>/dev/null
 
+  functions=$(aws lambda list-functions --query 'Functions[].FunctionName' --output text)
+ 
+  for f in ${functions}; do
+    if [ "$f" = "${lambda_function_name}" ]; then
+      if [ "${shall_update_code}" = "yes" ]; then
 
-  # Create the role for the Lambda function
+        # Update Lambda function's code if requested
 
-  aws iam create-role --role-name "${lambda_function_name}_role" --assume-role-policy-document file://${role_trust_policy_path}
-  aws iam attach-role-policy --policy-arn arn:aws:iam::aws:policy/AdministratorAccess --role-name "${lambda_function_name}_role"
-  lambda_role_arn=$(aws iam list-roles | jq -r ".Roles[] | select(.RoleName==\"${lambda_function_name}_role\") | .Arn")
-  sleep 10
+        aws lambda update-function-code \
+        --function-name ${lambda_function_name} \
+        --zip-file fileb://"${pkg_name}.zip"
 
+        updated_code="yes"
+      fi
+    fi 
+  done
 
-  # Create the Lambda function
+  if [ "${updated_code}" != "yes" ]; then
 
-  aws lambda create-function \
-  --function-name ${lambda_function_name} \
-  --runtime "python3.6" \
-  --role ${lambda_role_arn} \
-  --handler ${lambda_function_name}.handler \
-  --timeout 180 \
-  --zip-file fileb://"${pkg_name}.zip"
+    # Create the role for the Lambda function
+
+    aws iam create-role --role-name "${lambda_function_name}_role" --assume-role-policy-document file://${role_trust_policy_path}
+    aws iam attach-role-policy --policy-arn arn:aws:iam::aws:policy/AdministratorAccess --role-name "${lambda_function_name}_role"
+    lambda_role_arn=$(aws iam list-roles | jq -r ".Roles[] | select(.RoleName==\"${lambda_function_name}_role\") | .Arn")
+    sleep 10
+
+    # Create the Lambda function
+
+    aws lambda create-function \
+    --function-name ${lambda_function_name} \
+    --runtime "python3.6" \
+    --role ${lambda_role_arn} \
+    --handler ${lambda_function_name}.handler \
+    --timeout 180 \
+    --zip-file fileb://"${pkg_name}.zip"
+
+  fi
 
 }
 
@@ -91,7 +112,7 @@ set_cron() {
 }
 
 
-while getopts ":c:f:h" opt; do
+while getopts ":c:f:hu" opt; do
   case ${opt} in
     c) 
        schedule=${OPTARG}
@@ -99,6 +120,9 @@ while getopts ":c:f:h" opt; do
     h)
        print_help
        exit 0
+       ;;
+    u)
+       shall_update_code="yes"
        ;;
     \?)
        echo "Invalid option: $OPTARG" 1>&2

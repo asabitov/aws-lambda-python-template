@@ -11,6 +11,8 @@ The 'script' is a Python script to be deployed as a Lambda function.
         deploy.sh script -c 'cron(0 * * * ? *)'
 
   -h    Print a help message and exit.
+
+  -u    Update Lambda function's code if the function already exists.
 ```
 ### Delete an AWS Lambda function and its dependencies.
 ```

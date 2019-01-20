@@ -120,7 +120,7 @@ if [ -z $1 ]; then
 fi
 
 current_folder=$(pwd)
-python_modules_path=$(find /root/git/aws-lambda-python-template -type d -name site-packages)
+python_modules_path=$(find ${current_folder} -type d -name site-packages)
 role_trust_policy_path="${current_folder}/role_trust_policy.json"
 
 python_script=$1

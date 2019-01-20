@@ -75,6 +75,8 @@ deploy_function() {
 
   fi
 
+  rm -fr "${current_dir}/build"
+
 }
 
 set_cron() {
@@ -143,9 +145,9 @@ if [ -z $1 ]; then
   exit 1
 fi
 
-current_folder=$(pwd)
-python_modules_path=$(find ${current_folder} -type d -name site-packages)
-role_trust_policy_path="${current_folder}/role_trust_policy.json"
+current_dir=$(pwd)
+python_modules_path=$(find ${current_dir} -type d -name site-packages)
+role_trust_policy_path="${current_dir}/role_trust_policy.json"
 
 python_script=$1
 lambda_function_name=$(echo ${python_script} | cut -d. -f1)

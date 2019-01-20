@@ -3,6 +3,9 @@
 
 print_help() {
 
+  echo
+  echo "Deploy a Python script to AWS Lambda."
+  echo 
   echo "Usage: deploy.sh [-c schedule] script"
   echo
   echo "The 'script' is a Python script to be deployed as a Lambda function."
@@ -59,7 +62,7 @@ set_cron() {
 
   aws events put-rule \
   --name "${lambda_function_name}_rule" \
-  --schedule-expression "${SCHEDULE}"
+  --schedule-expression "${schedule}"
 
   event_rule_arn=$(aws events list-rules | jq -r ".Rules[] | select(.Name==\"${lambda_function_name}_rule\") | .Arn")
 
@@ -91,7 +94,7 @@ set_cron() {
 while getopts ":c:f:h" opt; do
   case ${opt} in
     c) 
-       #SCHEDULE='cron(0 * * * ? *)'
+       schedule=${OPTARG}
        ;;
     h)
        print_help
@@ -109,20 +112,23 @@ while getopts ":c:f:h" opt; do
   esac
 done
 
-shift $((OPTIND -1))
+shift "$((OPTIND -1))"
 
-if [ -z ${@:$OPTIND:1} ]; then
+if [ -z $1 ]; then
   print_help
   exit 1
 fi
 
-
 current_folder=$(pwd)
-python_script=${@:$OPTIND:1}
 python_modules_path=$(find /root/git/aws-lambda-python-template -type d -name site-packages)
 role_trust_policy_path="${current_folder}/role_trust_policy.json"
+
+python_script=$1
 lambda_function_name=$(echo ${python_script} | cut -d. -f1)
 
-
 deploy_function
+
+if [ "$(echo ${schedule} | cut -c 1-4)" = "cron" ]; then
+  set_cron
+fi
 

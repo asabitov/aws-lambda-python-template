@@ -109,6 +109,7 @@ set_cron() {
   --rule "${lambda_function_name}_rule" \
   --targets file://"${lambda_function_name}_rule_targets.json"
 
+  cd ${current_dir}
   rm "${lambda_function_name}_rule_targets.json"
 
 }

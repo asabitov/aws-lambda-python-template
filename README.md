@@ -25,5 +25,5 @@ The 'function' is an AWS Lambda function to be deleted.
   -h    Print a help message and exit.
 ```
 <br>
-Please note that the Lambda function in this template has full administrative permissions.<br>
+Please note that the Lambda function in this template has administrator access.<br>
 You should change function's role when deploying it to production.  

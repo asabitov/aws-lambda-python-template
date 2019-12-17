@@ -1,6 +1,3 @@
-# aws-lambda-python-template
-AWS Lambda template for a Python script.
-
 ### Deploy a Python script to AWS Lambda.
 ```
 Usage: deploy.sh [-c schedule] [-u] script

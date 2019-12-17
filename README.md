@@ -1,4 +1,4 @@
-# python-to-lambda
+## Python and AWS Lambda
 These scripts help to deploy or delete a Python script in AWS Lambda. 
 
 ### Deploy a Python script to AWS Lambda.

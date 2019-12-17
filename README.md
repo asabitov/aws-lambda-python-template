@@ -1,5 +1,5 @@
 # python-to-lambda
-This script helps to manage a Python script in AWS Lambda. 
+This script helps to deploy or remove a Python script in AWS Lambda. 
 
 ### Deploy a Python script to AWS Lambda.
 ```

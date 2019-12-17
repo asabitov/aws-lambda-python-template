@@ -1,3 +1,6 @@
+#python-to-lambda
+This script helps to manage a Python script in AWS Lambda. 
+
 ### Deploy a Python script to AWS Lambda.
 ```
 Usage: deploy.sh [-c schedule] [-u] script
